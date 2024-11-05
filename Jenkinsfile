@@ -8,7 +8,8 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/18bitmood/rsschool-wordpress.git'
+                git branch: 'main',
+                    url: 'https://github.com/18bitmood/rsschool-wordpress.git'
             }
         }
         
