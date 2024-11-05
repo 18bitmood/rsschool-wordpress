@@ -16,9 +16,9 @@ pipeline {
         stage('Deploy WordPress') {
             steps {
                 sh '''
-                    sudo /usr/local/bin/helm repo add bitnami https://charts.bitnami.com/bitnami
-                    sudo /usr/local/bin/helm repo update
-                    sudo /usr/local/bin/helm upgrade --install wordpress ./wordpress-chart --namespace wordpress --create-namespace
+                    /usr/local/bin/helm repo add bitnami https://charts.bitnami.com/bitnami
+                    /usr/local/bin/helm repo update
+                    /usr/local/bin/helm upgrade --install wordpress ./wordpress-chart --namespace wordpress --create-namespace
                 '''
             }
         }
