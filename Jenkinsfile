@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         KUBECONFIG = '/etc/rancher/k3s/k3s.yaml'
+        HELM_PATH = sh(script: 'which helm', returnStdout: true).trim()
     }
     stages {
         stage('Clone Repository') {
@@ -13,10 +14,9 @@ pipeline {
         stage('Deploy WordPress') {
             steps {
                 sh '''
-                    ln -s $(which helm) /usr/local/bin/helm || true
-                    helm repo add bitnami https://charts.bitnami.com/bitnami
-                    helm repo update
-                    helm upgrade --install wordpress ./wordpress-chart --namespace wordpress --create-namespace
+                    ${HELM_PATH} repo add bitnami https://charts.bitnami.com/bitnami
+                    ${HELM_PATH} repo update
+                    ${HELM_PATH} upgrade --install wordpress ./wordpress-chart --namespace wordpress --create-namespace
                 '''
             }
         }
