@@ -2,9 +2,20 @@ pipeline {
     agent any
     environment {
         KUBECONFIG = '/etc/rancher/k3s/k3s.yaml'
-        HELM_PATH = sh(script: 'which helm', returnStdout: true).trim()
     }
     stages {
+        stage('Install Helm') {
+            steps {
+                sh '''
+                    export PATH=$PATH:/var/jenkins_home/bin
+                    mkdir -p /var/jenkins_home/bin
+                    cd /var/jenkins_home
+                    curl -LO https://get.helm.sh/helm-v3.12.3-linux-amd64.tar.gz
+                    tar -zxvf helm-v3.12.3-linux-amd64.tar.gz
+                    mv linux-amd64/helm /var/jenkins_home/bin/
+                '''
+            }
+        }
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
@@ -14,9 +25,10 @@ pipeline {
         stage('Deploy WordPress') {
             steps {
                 sh '''
-                    ${HELM_PATH} repo add bitnami https://charts.bitnami.com/bitnami
-                    ${HELM_PATH} repo update
-                    ${HELM_PATH} upgrade --install wordpress ./wordpress-chart --namespace wordpress --create-namespace
+                    export PATH=$PATH:/var/jenkins_home/bin
+                    helm repo add bitnami https://charts.bitnami.com/bitnami
+                    helm repo update
+                    helm upgrade --install wordpress ./wordpress-chart --namespace wordpress --create-namespace
                 '''
             }
         }
