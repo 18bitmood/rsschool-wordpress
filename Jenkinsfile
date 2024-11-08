@@ -13,7 +13,7 @@ pipeline {
         stage('Deploy WordPress') {
             steps {
                 sh '''
-                    sudo ln -s $(which helm) /usr/local/bin/helm
+                    ln -s $(which helm) /usr/local/bin/helm || true
                     helm repo add bitnami https://charts.bitnami.com/bitnami
                     helm repo update
                     helm upgrade --install wordpress ./wordpress-chart --namespace wordpress --create-namespace
